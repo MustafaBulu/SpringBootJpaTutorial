@@ -1,4 +1,4 @@
-package entity;
+package com.mustafabulu.entity;
 
 
 import lombok.AllArgsConstructor;
@@ -37,8 +37,10 @@ public class StudentEntity implements Serializable {
     private Date creationDate;
 
 
-
-
-
-
+    public StudentEntity(long studentid, String studentName, String studentSurName, String studentDepartment) {
+        this.studentid = studentid;
+        this.studentName = studentName;
+        this.studentSurName = studentSurName;
+        this.studentDepartment = studentDepartment;
+    }
 }
