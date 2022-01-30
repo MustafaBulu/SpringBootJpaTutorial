@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 @Log4j2
 public class EntityController {
@@ -29,11 +32,11 @@ public class EntityController {
         StudentEntity studentEntity= new StudentEntity(0,"Mustafa","Bulu","Computer Engineering");
         iStudentRepository.save(studentEntity); // 0 ise insert yapıyor 0 dan farklı ise güncelleme yapıyor.
         log.info(studentEntity.getStudentid() + ""+ studentEntity.getStudentName(),studentEntity.getStudentSurName(),studentEntity.getStudentDepartment());
-        return studentEntity.getStudentid() + "  " + studentEntity.getStudentName()+ " " +studentEntity.getStudentSurName() + "  "+studentEntity.getStudentDepartment();
+        return "Ogrenci Eklendi:  "+studentEntity.getStudentid() + "  " + studentEntity.getStudentName()+ " " +studentEntity.getStudentSurName() + "  "+studentEntity.getStudentDepartment();
     }
 
     //Find
-    //http://localhost:3333/jpa/student/find
+    //http://localhost:3333/jpa/student/find/4
 
     @GetMapping("/jpa/student/find/{id}")
     @ResponseBody // bunu yazmazsak return kısmındaki sayfayı döndürmeye çalışır
@@ -43,7 +46,7 @@ public class EntityController {
         if (optional.isPresent()){
             StudentEntity studentEntity=optional.get();
             log.info(studentEntity.toString());
-            return studentEntity.toString();
+            return "Ogrenci Numarası "+ studentid+ " olan ogrenci: " +studentEntity.toString();
 
         }else{
 
@@ -74,9 +77,9 @@ public class EntityController {
         studentEntity.setStudentSurName(studentSurname);
         studentEntity.setStudentDepartment(studentDepartment);
         iStudentRepository.save(studentEntity); // save işlemini burada yapıyoruz.
-        return "Guncelleme Basarili  " + studentEntity;
+        return "Guncelleme Basarili  "+studentEntity;
     }else{
-        return "Guncelleme Basarisiz"+ studentid;
+        return "Guncelleme Basarisiz"+ " " + studentid +"  "+ "numarali ögrenci bulunamadi.";
 
     }
 
@@ -102,11 +105,30 @@ public class EntityController {
 
 
         }else{
-            return "Silme Basarisiz";
+            return "Silme Basarisiz istenilen id ile eşleşen öğrenci yok";
 
 
         }
 
+    }
+
+    //ListAllElement
+    //http://localhost:3333/jpa/student/selectList
+    @GetMapping("/jpa/student/selectList")
+    @ResponseBody
+    public String selectList(){
+
+        Iterable<StudentEntity> iterableList= iStudentRepository.findAll();
+        List<StudentEntity> list= new ArrayList<>();
+
+
+        for (StudentEntity studentEntity:iterableList) {
+            list.add(studentEntity);
+            log.info(studentEntity.toString());
+            
+        }
+
+        return "Tum ogrencilerin listesi:  " + list ;
     }
 
 
